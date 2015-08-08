@@ -14,3 +14,5 @@ Safari already uses the shortcut we know & love, so let's remap the default.
 1. Select Keyboard > Shortcuts > App Shortcuts.
 1. Click `+`.
 1. Application is `Safari.app`, Menu Title is `Show Tab Bar`, and in Keyboard Shortcut press <kbd>Control</kbd><kbd>Option</kbd><kbd>Shift</kbd><kbd>Command ⌘</kbd><kbd>T</kbd> (which should appear ⌃⌥⇧⌘T).
+
+All done! Go close & reopen some tabs!
