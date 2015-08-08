@@ -1,0 +1,64 @@
+<!--
+
+Safari-Closed-Tabs v0.1 (2015-08-07)
+Copyright 2015 J Iceton (safariclosedtabs@emailbad.com)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<html>
+<head>
+</head>
+<body>
+
+<script>
+
+var closedUrls = [],
+    isCurrentTabPrivate = false,
+    maxUrls = 100; // 0 = unlimited
+
+function receiveMessage(msgEvent) {
+    // set private flag if current tab is private
+    if (msgEvent.name === "private") {
+        isCurrentTabPrivate = msgEvent.message;
+        return;
+    }
+    // open last closed tab
+    if (!isCurrentTabPrivate && msgEvent.name === "reopen" && closedUrls.length > 0) {
+        safari.application.activeBrowserWindow.openTab().url = closedUrls.pop();
+    }
+}
+function recordClose(e) {
+    var url = e.target.url;
+    if (!isCurrentTabPrivate && url && url.length > 0) {
+        closedUrls.push(url);
+    }
+    // trim closed urls if too many
+    if (maxUrls !== 0 && closedUrls.length > maxUrls) {
+        closedUrls = closedUrls.slice(closedUrls.length - maxUrls);
+    }
+}
+function testPrivate() {
+    safari.application.activeBrowserWindow.activeTab.page.dispatchMessage("testPrivate", null);
+}
+
+safari.application.addEventListener("activate", testPrivate, true);
+safari.application.addEventListener("close", recordClose, true);
+safari.application.addEventListener("message", receiveMessage, false);
+
+</script>
+
+</body>
+</html>
